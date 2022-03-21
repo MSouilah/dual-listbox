@@ -67,6 +67,10 @@ class DualListbox {
         this.removeAllButtonText = 'remove all';
 
         this.searchPlaceholder = 'Search';
+
+        this.sortData = false;
+        this.sortType = 'value';
+        this.sortWay = 'asc';
     }
 
     /**
@@ -192,6 +196,68 @@ class DualListbox {
         for (let i = 0; i < elements.length; i++) {
             let listItem = elements[i];
             list.appendChild(listItem);
+        }
+
+        // https://www.w3schools.com/howto/howto_js_sort_list.asp
+        // sort on alphabetical order asc or desc
+        // sort on value (data-id) asc or desc
+        if(this.sortData){
+            var i, switching, b, shouldSwitch;
+            switching = true;
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                b = list.getElementsByTagName("LI");
+
+                // Loop through all list items:
+                for (i = 0; i < (b.length - 1); i++) {
+                    // Start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /* Check if the next item should
+                    switch place with the current item: */
+                    if(this.sortType == "text"){
+                        if(this.sortWay == "asc"){
+                            if (b[i].innerHTML.toLowerCase() > b[i + 1].innerHTML.toLowerCase()) {
+                                /* If next item is alphabetically lower than current item,
+                                mark as a switch and break the loop: */
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }else if(this.sortWay == "desc"){
+                            if (b[i].innerHTML.toLowerCase() < b[i + 1].innerHTML.toLowerCase()) {
+                                /* If next item is alphabetically lower than current item,
+                                mark as a switch and break the loop: */
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }else if (this.sortType == "value"){
+                        if(this.sortWay == "asc"){
+                            if (b[i].getAttribute("data-id").toLowerCase() > b[i + 1].getAttribute("data-id").toLowerCase()) {
+                                /* If next item is alphabetically lower than current item,
+                                mark as a switch and break the loop: */
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }else if(this.sortWay == "desc"){
+                            if (b[i].getAttribute("data-id").toLowerCase() < b[i + 1].getAttribute("data-id").toLowerCase()) {
+                                /* If next item is alphabetically lower than current item,
+                                mark as a switch and break the loop: */
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark the switch as done: */
+                    b[i].parentNode.insertBefore(b[i + 1], b[i]);
+                    switching = true;
+                }
+            }
         }
     }
 

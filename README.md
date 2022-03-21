@@ -67,10 +67,13 @@ let dualListbox = new DualListbox('#select', {
     removeButtonText: '<',
     addAllButtonText: '>>',
     removeAllButtonText: '<<',
+    sortData: true,
+    sortType: 'text',
+    sortWay: 'asc'
 
     options: [
-        {text:"Option 1", value: "OPTION1"},
-        {text:"Option 2", value: "OPTION2"},
+        {text:"Car", value: "OPTION1"},
+        {text:"Plane", value: "OPTION2"},
         {text:"Selected option", value: "OPTION3", selected:true}
     ]
 });
