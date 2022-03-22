@@ -71,6 +71,8 @@ class DualListbox {
         this.sortData = false;
         this.sortType = 'value';
         this.sortWay = 'asc';
+        this.textKind = 'text'; // number, text
+        this.valueKind = 'number'; // number, text
     }
 
     /**
@@ -198,64 +200,47 @@ class DualListbox {
             list.appendChild(listItem);
         }
 
-        // https://www.w3schools.com/howto/howto_js_sort_list.asp
         // sort on alphabetical order asc or desc
         // sort on value (data-id) asc or desc
         if(this.sortData){
-            var i, switching, b, shouldSwitch;
-            switching = true;
-            /* Make a loop that will continue until
-            no switching has been done: */
-            while (switching) {
-                // Start by saying: no switching is done:
-                switching = false;
-                b = list.getElementsByTagName("LI");
+            var i, j, b, points, sortArray;
+            b = list.getElementsByTagName("LI");
+            points = [];
+            for (i = 0; i < (b.length); i++) {
+                if(this.sortType == "value"){
+                    points.push(b[i].getAttribute("data-id").toLowerCase());
+                    if(this.valueKind == 'text'){
+                        sortArray = points.sort(function(a, b){return a.localeCompare(b)});
+                    }else if(this.valueKind == 'number'){
+                        sortArray = points.sort(function(a, b){return a-b});
+                    }
+                }else if(this.sortType == "text"){
+                    points.push(b[i].innerHTML.toLowerCase());
+                    if(this.textKind == 'text'){
+                        sortArray = points.sort(function(a, b){return a.localeCompare(b)});
+                    }else if(this.textKind == 'number'){
+                        sortArray = points.sort(function(a, b){return a-b});
+                    }
+                }
+            }
 
-                // Loop through all list items:
-                for (i = 0; i < (b.length - 1); i++) {
-                    // Start by saying there should be no switching:
-                    shouldSwitch = false;
-                    /* Check if the next item should
-                    switch place with the current item: */
-                    if(this.sortType == "text"){
-                        if(this.sortWay == "asc"){
-                            if (b[i].innerHTML.toLowerCase() > b[i + 1].innerHTML.toLowerCase()) {
-                                /* If next item is alphabetically lower than current item,
-                                mark as a switch and break the loop: */
-                                shouldSwitch = true;
-                                break;
+            if (typeof sortArray !== 'undefined' && sortArray.length > 0) {
+                if(this.sortWay == "desc"){
+                    sortArray.reverse();
+                }
+
+                for (j = 0; j < (sortArray.length); j++) {
+                    for (i = 0; i < (b.length - 1); i++) {
+                        if(this.sortType == "value"){
+                            if(b[i].getAttribute("data-id").toLowerCase() == sortArray[j]){
+                                b[i].parentNode.insertBefore(b[i], null);
                             }
-                        }else if(this.sortWay == "desc"){
-                            if (b[i].innerHTML.toLowerCase() < b[i + 1].innerHTML.toLowerCase()) {
-                                /* If next item is alphabetically lower than current item,
-                                mark as a switch and break the loop: */
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }
-                    }else if (this.sortType == "value"){
-                        if(this.sortWay == "asc"){
-                            if (b[i].getAttribute("data-id").toLowerCase() > b[i + 1].getAttribute("data-id").toLowerCase()) {
-                                /* If next item is alphabetically lower than current item,
-                                mark as a switch and break the loop: */
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }else if(this.sortWay == "desc"){
-                            if (b[i].getAttribute("data-id").toLowerCase() < b[i + 1].getAttribute("data-id").toLowerCase()) {
-                                /* If next item is alphabetically lower than current item,
-                                mark as a switch and break the loop: */
-                                shouldSwitch = true;
-                                break;
+                        }else if(this.sortType == "text"){
+                            if(b[i].innerHTML.toLowerCase() == sortArray[j]){
+                                b[i].parentNode.insertBefore(b[i], null);
                             }
                         }
                     }
-                }
-                if (shouldSwitch) {
-                    /* If a switch has been marked, make the switch
-                    and mark the switch as done: */
-                    b[i].parentNode.insertBefore(b[i + 1], b[i]);
-                    switching = true;
                 }
             }
         }
